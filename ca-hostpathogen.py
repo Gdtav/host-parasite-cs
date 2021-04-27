@@ -7,27 +7,30 @@ initProb = 0.01
 infectionRate = 0.85
 regrowthRate = 0.15
 
+
 def initialize():
     global time, config, nextConfig
 
     time = 0
-    
-    config = zeros([height, width])
+
+    config = zeros([height, width])  # Blue
     for x in range(width):
         for y in range(height):
             if random() < initProb:
-                state = 2
+                state = 2  # Red
             else:
-                state = 1
+                state = 1  # Green
             config[y, x] = state
 
     nextConfig = zeros([height, width])
 
+
 def observe():
     cla()
-    imshow(config, vmin = 0, vmax = 2, cmap = cm.jet)
+    imshow(config, vmin=0, vmax=2, cmap=cm.jet)
     axis('image')
     title('t = ' + str(time))
+
 
 def update():
     global time, config, nextConfig
@@ -40,13 +43,13 @@ def update():
             if state == 0:
                 for dx in range(-1, 2):
                     for dy in range(-1, 2):
-                        if config[(y+dy)%height, (x+dx)%width] == 1:
+                        if config[(y + dy) % height, (x + dx) % width] == 1:
                             if random() < regrowthRate:
                                 state = 1
             elif state == 1:
                 for dx in range(-1, 2):
                     for dy in range(-1, 2):
-                        if config[(y+dy)%height, (x+dx)%width] == 2:
+                        if config[(y + dy) % height, (x + dx) % width] == 2:
                             if random() < infectionRate:
                                 state = 2
             else:
@@ -56,4 +59,6 @@ def update():
 
     config, nextConfig = nextConfig, config
 
-pycxsimulator.GUI().start(func=[initialize, observe, update])
+
+if __name__ == '__main__':
+    pycxsimulator.GUI().start(func=[initialize, observe, update])
