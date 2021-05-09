@@ -1,42 +1,53 @@
+import os
+
 import pycxsimulator
 from pylab import *
+# from dotenv import load_dotenv, find_dotenv
 
-width = 50
-height = 50
-initProb = 0.01
-infectionRate = 0.85
-regrowthRate = 0.15
-deathProb = 0.5
-cureProb = 0.3
-
+width = 50 # Size of horizontal length
+height = 50 # Size of vertical length
+initProb = 0.01 # Probability of starting infected with parasite
+infectionRate = 0.85 # Probability of getting infected
+regrowthRate = 0.15 # Probability of regrowing in cellular
+deathProb = 0.5 # Probability of dying after contracting the parasite
+cureProb = 0.3 # Probability of the parasite die
+neighnourhood_selected = "Moore"
+plot_CA = 1
 
 def initialize():
-    global time, config, nextConfig
-
+    global time, config, nextConfig, clean, healthy, infected
     time = 0
 
+    # Generate Initial Conditions based on configurations
     config = zeros([height, width])  # State 0: Blue
+
     for x in range(width):
         for y in range(height):
             if random() < initProb:
-                state = 2  # State 2: Red
+                cell_state = 2  # State 2: Red
             else:
-                state = 1  # State 1: Green
-            config[x, y] = state
+                cell_state = 1  # State 1: Green
+            config[x, y] = cell_state
 
     nextConfig = zeros([height, width])
 
+    # Number of clean, healthy and infectd
+    clean = np.array([np.count_nonzero(config == 0)])
+    healthy = np.array([np.count_nonzero(config == 1)])
+    infected = np.array([np.count_nonzero(config == 2)])
 
 def observe():
     cla()
-    imshow(config, vmin=0, vmax=2, cmap=cm.jet)
-    axis('image')
-    title('t = ' + str(time))
 
+    if plot_CA:
+        figure(plot_CA)
+        imshow(config, vmin=0, vmax=2, cmap=cm.jet)
+        axis('image')
+        title('t = ' + str(time))
 
 def update():
-    global time, config, nextConfig, state
-    neighbours = neighbourhood("Moore")
+    global time, config, nextConfig, state, clean, healthy, infected
+    neighbours = neighbourhood(neighnourhood_selected)
     time += 1
 
     for x in range(width):
@@ -67,6 +78,24 @@ def update():
 
     config, nextConfig = nextConfig, config
 
+    # Change state of stored values
+    ## Clean - State 0
+    number_cleaned_cells = np.count_nonzero(config == 0)
+    clean = np.append(clean, number_cleaned_cells)
+
+    ## Healthy - State 1
+    number_healthy_cells = np.count_nonzero(config == 1)
+    healthy = np.append(healthy, number_healthy_cells)
+
+    ## Infected - State 2
+    number_infected_cells = np.count_nonzero(config == 2)
+    infected = np.append(infected, number_infected_cells)
+
+    print(f'===== Iteration: {time} =====')
+    print(f'Number of Clean: {number_cleaned_cells}')
+    print(f'Number of Healthy: {number_healthy_cells}')
+    print(f'Number of Infected: {number_infected_cells}\n')
+
 
 def neighbourhood(type):
     def neighbourhood(x, y):
@@ -87,3 +116,6 @@ def neighbourhood(type):
 
 if __name__ == '__main__':
     pycxsimulator.GUI().start(func=[initialize, observe, update])
+    # load_dotenv(find_dotenv())  # take environment variables from .env
+    # config = dotenv_values(".env")
+    # print(os.getenv('WIDTH'))
