@@ -12,7 +12,8 @@ regrowthRate = 0.15 # Probability of regrowing in cellular
 deathProb = 0.5 # Probability of dying after contracting the parasite
 cureProb = 0.3 # Probability of the parasite die
 neighnourhood_selected = "Moore"
-plot_CA = 1
+plotCA = 1
+plotPhase = 1
 
 def initialize():
     global time, config, nextConfig, clean, healthy, infected
@@ -39,10 +40,20 @@ def initialize():
 def observe():
     cla()
 
-    if plot_CA:
-        figure(plot_CA)
+    if plotCA:
+        figure(plotCA)
         imshow(config, vmin=0, vmax=2, cmap=cm.jet)
         axis('image')
+        title('t = ' + str(time))
+
+    if plotPhase:
+        figure(plotCA + plotPhase)
+        plot(np.arange(time + 1), clean)
+        plot(np.arange(time + 1), healthy)
+        plot(np.arange(time + 1), infected)
+        xlabel('Time')
+        ylabel('Number of Cells')
+        legend(('Clean', 'Healthy', 'Infected'))
         title('t = ' + str(time))
 
 def update():
