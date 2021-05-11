@@ -69,27 +69,25 @@ def observe():
         title('t = ' + str(time))
 
 def update():
-    global time, config, nextConfig, state, empty, healthy, infected, end_program_count, recently_infected
+    global time, config, nextConfig, state, empty, healthy, infected, end_program_count
     neighbours = neighbourhood(neighbourhood_selected)
     time += 1
 
     for x in range(width):
         for y in range(height):
             state = config[x, y]
-            if state == 2 and recently_infected[x, y] == 0:
+            if state == 2:
                 if random() < transmissionRate: # active injection
                     state = 0  # empty
                     neigh_list = neighbours(x, y)
                     for neighbour in neigh_list:
                         if config[neighbour[0], neighbour[1]] == 1:
                             if random() < infectionRate:
-                                config[neighbour[0], neighbour[1]] = 2
-                                recently_infected[neighbour[0], neighbour[1]] = 1 # in this iteration they can't sprout
+                                nextConfig[neighbour[0], neighbour[1]] = 2
 
             nextConfig[x, y] = state
 
     config, nextConfig = nextConfig, config
-    recently_infected = zeros([height, width])
 
     # Change state of stored values
     ## Empty - State 0
