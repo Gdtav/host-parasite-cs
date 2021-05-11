@@ -1,5 +1,7 @@
 import os
 
+import numpy as np
+
 import pycxsimulator
 from pylab import *
 # from dotenv import load_dotenv, find_dotenv
@@ -7,13 +9,14 @@ from pylab import *
 width = 50 # Size of horizontal length
 height = 50 # Size of vertical length
 initProb = 0.01 # Probability of starting infected with parasite
-infectionRate = 0.85 # Probability of getting infected
+infectionRate = 0.15 # Probability of getting infected
 regrowthRate = 0.15 # Probability of regrowing in cellular
 deathProb = 0.5 # Probability of dying after contracting the parasite
 cureProb = 0.3 # Probability of the parasite die
 neighnourhood_selected = "Moore"
 plotCA = 1
 plotPhase = 1
+simulator = pycxsimulator.GUI()
 
 def initialize():
     global time, config, nextConfig, clean, healthy, infected
@@ -60,7 +63,7 @@ def update():
     global time, config, nextConfig, state, clean, healthy, infected
     neighbours = neighbourhood(neighnourhood_selected)
     time += 1
-
+    number_deaths = 0
     for x in range(width):
         for y in range(height):
             state = config[x, y]
@@ -80,6 +83,7 @@ def update():
                 p = random()
                 if p < deathProb:
                     state = 0  # Death
+                    number_deaths += 1
                 elif deathProb < p < (min(deathProb+cureProb, 1)):
                     state = 1  # Cured
                 else:
@@ -101,11 +105,17 @@ def update():
     ## Infected - State 2
     number_infected_cells = np.count_nonzero(config == 2)
     infected = np.append(infected, number_infected_cells)
+    if number_infected_cells == 0:
+        simulator.runEvent()
+        print("No more infected, victory!")
+        input("Press enter to reset the simulation")
+        simulator.resetModel()
 
     print(f'===== Iteration: {time} =====')
     print(f'Number of Clean: {number_cleaned_cells}')
     print(f'Number of Healthy: {number_healthy_cells}')
     print(f'Number of Infected: {number_infected_cells}\n')
+    print(f'Number of Deaths: {number_deaths}\n')
 
 
 def neighbourhood(type):
@@ -126,7 +136,7 @@ def neighbourhood(type):
 
 
 if __name__ == '__main__':
-    pycxsimulator.GUI().start(func=[initialize, observe, update])
+    simulator.start(func=[initialize, observe, update])
     # load_dotenv(find_dotenv())  # take environment variables from .env
     # config = dotenv_values(".env")
     # print(os.getenv('WIDTH'))
