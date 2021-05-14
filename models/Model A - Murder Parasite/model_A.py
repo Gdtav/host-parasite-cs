@@ -1,17 +1,17 @@
 import pycxsimulator
 from pylab import *
 
-# This parasites when leave the body die and he infectes another
+# This parasites when leave the body die and infects another
 
-width = 3  # Size of horizontal length
-height = 3  # Size of vertical length
-hostProb = 0.0  # Probability of the cell being occupied by a healthy host
-infectedProb = 0.0  # Probability of cell being occupied by a host with parasite
+width = 100 # Size of horizontal length
+height = 100  # Size of vertical length
+hostProb = 0.30  # Probability of the cell being occupied by a healthy host
+infectedProb = 0.07  # Probability of cell being occupied by a host with parasite
 
-infectionRate = 0.0  # Probability of getting infected with an parasite
-regrowthRate = 0.20 # Probability of regrowing in cellular
-deathProb = 0.0  # Probability of dying after contracting the parasite
-cureProb = 0.0 # Probability of the parasite die
+infectionRate = 0.05  # Probability of getting infected with an parasite
+regrowthRate = 0.03  # Probability of regrowing in cellular
+deathProb = 0.01  # Probability of dying after contracting the parasite
+cureProb = 0.01  # Probability of the parasite die
 
 neighbourhood_selected = "Moore"
 plotCA = 1
@@ -82,9 +82,6 @@ def update():
                     print(f'[{x} {y}]: Does not regrowth healthy host')
                     state = 0
 
-            elif state == 0 and nextConfig[x, y] == 1:  # empty
-                state = 1
-
             elif state == 1:  # healthy
                 print(f'Checking [{x} {y}]: that is healthy')
                 for neighbour in neigh_list:
@@ -113,15 +110,17 @@ def update():
                     state = 1 # parasite dies
                 else:
                     for neighbour in neigh_list:
-                        if nextConfig[neighbour[0], neighbour[1]] == 0:
+                        if config[neighbour[0], neighbour[1]] == 0 and nextConfig[neighbour[0], neighbour[1]] == 0:
                             nextConfig[neighbour[0], neighbour[1]] = 2  # healthy moves to a empty cell
                             state = 0  # will move so this cell will be empty
                             break
                     else:
                         state = 2  # infected does not move
+            elif state != nextConfig[x, y]:  # empty
+                state = nextConfig[x, y]
 
             nextConfig[x, y] = state
-            print(nextConfig)
+            # print(nextConfig)
 
     config[:] = nextConfig
     nextConfig[:] = config[:]
