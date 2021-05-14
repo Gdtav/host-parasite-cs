@@ -91,29 +91,6 @@ def observe():
         #legend(('Empty', 'Healthy', 'Infected', 'Poop with Parasite'))
         legend(('Healthy', 'Infected', 'Poop with Parasite'))
         title('t = ' + str(time))
-#
-# def update():
-#     global time, config, nextConfig, state, empty, healthy, infected, poop
-#     neighbours = neighbourhood(neighbourhood_selected)
-#     time += 1
-#     number_deaths = 0
-#
-#     for x in range(width):
-#         for y in range(height):
-#             state = config[x, y]
-#
-#             if state == 0: # this state is empty
-#                 empty_cell_neighbour_list = neighbours(x, y)
-#                 shuffle(empty_cell_neighbour_list)
-#                 for empty_cell_neighbour in empty_cell_neighbour_list:
-#                     if config[empty_cell_neighbour[0], empty_cell_neighbour[1]] == 1:
-#                         snail_cell_neighbour_list = neighbours(empty_cell_neighbour[0], empty_cell_neighbour[1])
-#                         shuffle(snail_cell_neighbour_list)
-#                         for snail_cell_neighbour in snail_cell_neighbour_list:
-#                             if
-
-
-
 
 
 def update():
@@ -207,28 +184,6 @@ def update():
                         state = 2  # does not move
                         print(f'[{x} {y}]: Will remain infected snail')
 
-            # elif state == 2:
-            #     if random() < deathProb:
-            #         config[x, y] = 0  # is now empty next round
-            #         nextConfig[x, y] = 0 # will be empty next round
-            #
-            #         # poop appears randomly in a cell 0
-            #         x_ = randint(0, width)
-            #         y_ = randint(0, height)
-            #         while config[x, y] != 0:
-            #             x_ = randint(0, width)
-            #             y_ = randint(0, height)
-            #         nextConfig[x, y] = 3  # bird ate and poop somewhere, it can poop right in another poop creating a poop tower
-            #         print(f'[{x} {y}]: will be a poop cell')
-            #     else:
-            #         neigh_list = neighbours(x, y)
-            #         shuffle(neigh_list)
-            #         index = randint(0, len(neigh_list))
-            #         neighbour = neigh_list[index]
-            #         nextConfig[neighbour[0], neighbour[1]] = 2  # move infected snail randomly
-            #         state = 0  # will be empty next round
-            #
-            # print(f'HAS SAID [{x} {y}]: will be state {state}')
             if state != 0:
                 nextConfig[x, y] = state
 
