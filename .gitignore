@@ -133,3 +133,6 @@ dmypy.json
 
 # MAC S*** OUT
 .DS_Store
+
+
+models/*/*.png
