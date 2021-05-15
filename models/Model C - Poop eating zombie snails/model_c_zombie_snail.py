@@ -220,11 +220,10 @@ def update():
     poop = np.append(poop, number_poop_cells)
 
     if number_infected_cells == 0:
-        pass
-        #simulator.runEvent()
-        #simulator.drawModel()
-        #print("No more infected, victory!")
-        #input("Press enter to reset the simulation")
+        simulator.runEvent()
+        simulator.drawModel()
+        print("No more infected, victory!")
+        input("Press enter to reset the simulation")
         #simulator.resetModel()
 
     print(f'===== Iteration: {time} =====')
