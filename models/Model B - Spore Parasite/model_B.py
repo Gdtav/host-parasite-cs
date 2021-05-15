@@ -3,17 +3,17 @@ from pylab import *
 
 # This parasites when leave the body die and infects another
 
-width = 6 # Size of horizontal length
-height = 6  # Size of vertical lengths
-hostProb = 0.3  # Probability of the cell being occupied by a healthy host
-infectedProb = 0.0  # Probability of cell being occupied by a host with parasite
+width = 100 # Size of horizontal length
+height = 100  # Size of vertical lengths
+hostProb = 0.01  # Probability of the cell being occupied by a healthy host
+infectedProb = 0.003  # Probability of cell being occupied by a host with parasite
 
-infectionRate = 1  # Probability of getting infected with an parasite
-regrowthRate = 0.01  # Probability of regrowing in cellular
-deathProb = 0.10  # Probability of dying after contracting the parasite
-cureProb = 0.0  # Probability of the parasite die
+infectionRate = 0.85  # Probability of getting infected with an parasite
+regrowthRate = 0.03  # Probability of regrowing in cellular
+deathProb = 0.01  # Probability of dying after contracting the parasite
+cureProb = 0.01  # Probability of the parasite die
 
-neighbourhood_selected = "Moore"
+neighbourhood_selected = "Von Neumann"
 plotCA = 1
 plotPhase = 1
 
@@ -76,16 +76,16 @@ def update():
             neigh_list = neighbours(x, y)
             shuffle(neigh_list)
             if state == 0 and nextConfig[x, y] == 0:  # empty
-                print(f'Checking [{x} {y}]: that is empty')
+                # (f'Checking [{x} {y}]: that is empty')
                 if random() < regrowthRate:
-                    print(f'[{x} {y}]: Regrowth healthy host')
+                    # print(f'[{x} {y}]: Regrowth healthy host')
                     state = 1
                 else:
-                    print(f'[{x} {y}]: Does not regrowth healthy host')
+                    # print(f'[{x} {y}]: Does not regrowth healthy host')
                     state = 0
 
             elif state == 1:  # healthy
-                print(f'Checking [{x} {y}]: that is healthy')
+                # print(f'Checking [{x} {y}]: that is healthy')
                 if nextConfig[x, y] == 2:
                     state = 2
                 else:
@@ -93,47 +93,47 @@ def update():
                         if config[neighbour[0], neighbour[1]] == 0 and nextConfig[neighbour[0], neighbour[1]] == 0:
                             nextConfig[neighbour[0], neighbour[1]] = 1  # healthy moves to a empty cell
                             state = 0  # will move so this cell will be empty
-                            print(f'[{x} {y}]: will be empty as healthy host moved')
-                            print(f'\t[{neighbour[0]} {neighbour[1]}]: Will be healthy host that just moved')
+                            # print(f'[{x} {y}]: will be empty as healthy host moved')
+                            # print(f'\t[{neighbour[0]} {neighbour[1]}]: Will be healthy host that just moved')
                             break
                     else:
-                        print(f'[{x} {y}]: Will remain a healthy host that did not moved')
+                        # print(f'[{x} {y}]: Will remain a healthy host that did not moved')
                         state = 1  # does not move
 
             elif state == 2:
-                print(f'Checking [{x} {y}]: that is infected')
+                # print(f'Checking [{x} {y}]: that is infected')
                 p = random()
                 if p < deathProb:
                     state = 0
-                    print(f'[{x} {y}]: Active injection')
+                    # print(f'[{x} {y}]: Active injection')
                     # active injection
                     for neighbour in neigh_list:
                         if config[neighbour[0], neighbour[1]] == 1 and nextConfig[neighbour[0], neighbour[1]] == 1:
-                            print(f'\t[{neighbour[0]} {neighbour[1]}]: can be infected')
+                            # print(f'\t[{neighbour[0]} {neighbour[1]}]: can be infected')
                             if random() < infectionRate:
                                 nextConfig[neighbour[0], neighbour[1]] = 2
                                 print(f'\t[{neighbour[0]} {neighbour[1]}]: Will be infected')
 
                 elif deathProb < p < (min(deathProb + cureProb, 1)):
                     state = 1  # parasite dies
-                    print(f'[{x} {y}]: Cure')
+                    # print(f'[{x} {y}]: Cure')
                 else:
                     for neighbour in neigh_list:
                         if config[neighbour[0], neighbour[1]] == 0 and nextConfig[neighbour[0], neighbour[1]] == 0:
                             nextConfig[neighbour[0], neighbour[1]] = 2  # healthy moves to a empty cell
                             state = 0  # will move so this cell will be empty
-                            print(f'[{x} {y}]: will be empty as healthy host moved')
-                            print(f'\t[{neighbour[0]} {neighbour[1]}]: Will be infected host that just moved')
+                            # print(f'[{x} {y}]: will be empty as healthy host moved')
+                            # print(f'\t[{neighbour[0]} {neighbour[1]}]: Will be infected host that just moved')
                             break
                     else:
-                        print(f'[{x} {y}]: Will remain a infected host that did not moved')
+                        # print(f'[{x} {y}]: Will remain a infected host that did not moved')
                         state = 2  # infected does not move
 
             elif state != nextConfig[x, y]:  # empty
                 state = nextConfig[x, y]
 
             nextConfig[x, y] = state
-            print(nextConfig)
+            # print(nextConfig)
 
     config[:] = nextConfig
     nextConfig[:] = config
