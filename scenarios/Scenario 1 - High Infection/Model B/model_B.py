@@ -37,7 +37,7 @@ def initialize():
                 cell_state = 10  # State 10: yellow
             config[x, y] = cell_state
 
-    nextConfig =  np.full((width, height), 10)
+    nextConfig = np.full((width, height), 10)
 
     # Number of clean, healthy and infected
     empty = np.array([np.count_nonzero(config == 10)])
@@ -136,7 +136,7 @@ def update():
             # print(nextConfig)
 
     config[:] = nextConfig
-    nextConfig[:] = config
+    nextConfig[:] = config[:]
 
     # Change state of stored values
     ## Empty - State 10
