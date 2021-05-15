@@ -6,7 +6,7 @@ from pylab import *
 width = 6 # Size of horizontal length
 height = 6  # Size of vertical lengths
 hostProb = 0.3  # Probability of the cell being occupied by a healthy host
-infectedProb = 0.15  # Probability of cell being occupied by a host with parasite
+infectedProb = 0.0  # Probability of cell being occupied by a host with parasite
 
 infectionRate = 1  # Probability of getting infected with an parasite
 regrowthRate = 0.01  # Probability of regrowing in cellular
@@ -151,11 +151,12 @@ def update():
     number_infected_cells = np.count_nonzero(config == 2)
     infected = np.append(infected, number_infected_cells)
 
-    if number_infected_cells == -1:
+    if number_infected_cells == 0:
         simulator.runEvent()
+        simulator.drawModel()
         print("No more infected, victory!")
         input("Press enter to reset the simulation")
-        simulator.resetModel()
+        #simulator.resetModel()
 
     print(f'===== Iteration: {time} =====')
     print(f'Number of Empty: {number_empty_cells}')
