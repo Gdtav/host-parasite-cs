@@ -53,7 +53,7 @@ def initialize():
                 variableString = "infected snail"
             else:
                 variableString = "poop"
-            #print(f'[{x} {y}]: is  a {variableString} cell')
+            # print(f'[{x} {y}]: is  a {variableString} cell')
             config[x, y] = cell_state
 
     nextConfig = zeros([width, height])
@@ -64,25 +64,25 @@ def initialize():
     infected = np.array([np.count_nonzero(config == 2)])
     poop = np.array([np.count_nonzero(config == 3)])
 
-    #print(f'===== Iteration: {time} =====')
-    #print(f'Number of Empty: {empty}')
-    #print(f'Number of Healthy: {healthy}')
-    #print(f'Number of Infected: {infected}')
-    #print(f'Number of Poops: {poop}\n')
+    # print(f'===== Iteration: {time} =====')
+    # print(f'Number of Empty: {empty}')
+    # print(f'Number of Healthy: {healthy}')
+    # print(f'Number of Infected: {infected}')
+    # print(f'Number of Poops: {poop}\n')
 
 def observe():
     cla()
 
     if plotCA:
         figure(plotCA)
-        imshow(config, vmin=0, vmax=3, cmap=cm.rainbow)
+        imshow(config, vmin=0, vmax=4, cmap=cm.hsv)
         axis('image')
         title('t = ' + str(time))
-        imsave(str(time) + ".png", config, vmin=0, vmax=3, cmap=cm.rainbow)
+        imsave(str(time) + ".png", config, vmin=0, vmax=4, cmap=cm.hsv)
 
     if plotPhase:
         figure(plotCA + plotPhase)
-        #plot(np.arange(time + 1), empty)
+        # plot(np.arange(time + 1), empty)
         plot(np.arange(time + 1), healthy)
         plot(np.arange(time + 1), infected)
         plot(np.arange(time + 1), poop)
@@ -101,64 +101,64 @@ def update():
 
     for x in range(width):
         for y in range(height):
-            #print(f'---------')
+            # print(f'---------')
             state = config[x, y]
-            ##print(f'[{x} {y}] is {config[x, y]}')
-            ##print(f'[{x} {y}] will be {nextConfig[x, y]}')
+            # print(f'[{x} {y}] is {config[x, y]}')
+            # print(f'[{x} {y}] will be {nextConfig[x, y]}')
 
             if state == 0 and nextConfig[x, y] != 0:
-                print(f'[{x} {y}] is now {state} but will be {nextConfig[x, y]}')
+                # print(f'[{x} {y}] is now {state} but will be {nextConfig[x, y]}')
                 state = nextConfig[x, y]
             elif state == 0 and nextConfig[x, y] == 0:
                 if random() < regrowthRate:
-                    #print(f'[{x} {y}]: Regrowth healthy host')
+                    # print(f'[{x} {y}]: Regrowth healthy host')
                     state = 1
                 else:
-                    #print(f'[{x} {y}]: Does not regrowth healthy host')
+                    # print(f'[{x} {y}]: Does not regrowth healthy host')
                     state = 0
 
             elif state == 1:  # healthy host
-                #print(f'[{x} {y}] is equal {state}')
+                # print(f'[{x} {y}] is equal {state}')
                 neigh_list = neighbours(x, y)
                 shuffle(neigh_list)
                 for neighbour in neigh_list:
                     if config[neighbour[0], neighbour[1]] == 3 and nextConfig[neighbour[0], neighbour[1]] == 3:  # poop in vicinity and no snail ate it
-                        #print("Poop in vicinity")
+                        # print("Poop in vicinity")
                         state = 0  # snail will move so this cell will be empty
                         if random() < infectionRate:
                             nextConfig[neighbour[0], neighbour[1]] = 2  # poop is eaten and snail is infected
-                            #print(f'[{neighbour[0]} {neighbour[1]}]: will be a infected snail cell')
+                            # print(f'[{neighbour[0]} {neighbour[1]}]: will be a infected snail cell')
                         else:
                             nextConfig[neighbour[0], neighbour[1]] = 1  # poop is eaten and snail is NOT infected
-                            #print(f'[{neighbour[0]} {neighbour[1]}]: will be a healthy snail cell')
+                            # print(f'[{neighbour[0]} {neighbour[1]}]: will be a healthy snail cell')
                         break
                 else:
                     # no poop in vicinity
                     shuffle(neigh_list)
-                    ##print(f'[{x} {y}] has a snail')
-                    ##print(neigh_list)
+                    # print(f'[{x} {y}] has a snail')
+                    # print(neigh_list)
                     for neighbour in neigh_list:
                         if config[neighbour[0], neighbour[1]] == 0 and nextConfig[neighbour[0], neighbour[1]] == 0:
                             # empty cell now and next round
-                            #print(f'[{neighbour[0]} {neighbour[1]}] atualmente esta em {config[neighbour[0], neighbour[1]]}')
+                            # print(f'[{neighbour[0]} {neighbour[1]}] atualmente esta em {config[neighbour[0], neighbour[1]]}')
                             nextConfig[neighbour[0], neighbour[1]] = 1  # healthy snail moves to a empty cell
-                            #print(f'[{neighbour[0]} {neighbour[1]}] agora que atualizei no futuro, esta em {config[neighbour[0], neighbour[1]]}')
+                            # print(f'[{neighbour[0]} {neighbour[1]}] agora que atualizei no futuro, esta em {config[neighbour[0], neighbour[1]]}')
 
-                            ##print(f'[{x} {y}] agora esta {config[neighbour[0], neighbour[1]]}')
-                            #print(f'Snail moved from [{x} {y}] to [{neighbour[0]} {neighbour[1]}]\n fazendo break')
+                            # print(f'[{x} {y}] agora esta {config[neighbour[0], neighbour[1]]}')
+                            # print(f'Snail moved from [{x} {y}] to [{neighbour[0]} {neighbour[1]}]\n fazendo break')
 
                             #config[neighbour[0], neighbour[1]] = 1  # this cell has a snail now
                             state = 0  # snail will move so this cell will be empty
-                            ##print(f'[{neighbour[0]} {neighbour[1]}]: will be a healthy snail cell')
+                            # print(f'[{neighbour[0]} {neighbour[1]}]: will be a healthy snail cell')
                             break
                     else:
-                        #print(f'[{x} {y}]: will remain a healthy snail cell')
+                        # print(f'[{x} {y}]: will remain a healthy snail cell')
                         state = 1  # snail does not move
 
             elif state == 2:
                 if random() < deathProb:
                     state = 0 # is now empty as it was eaten by a bird
-                    #print(f'[{x} {y}]: Eaten by a bird')
+                    # print(f'[{x} {y}]: Eaten by a bird')
 
                     # Poop appears randomly in cell
                     x_ = randint(0, width)
@@ -175,20 +175,20 @@ def update():
                             break
 
                     nextConfig[x_, y_] = 3 # poop in this cell
-                    #print(f'[{x_} {y_}]: Will be infected poop')
+                    # print(f'[{x_} {y_}]: Will be infected poop')
                 else:  # move infected snail randomly in neighbourhood
                     neigh_list = neighbours(x, y)
                     shuffle(neigh_list)
                     for neighbour in neigh_list:
                         if nextConfig[neighbour[0], neighbour[1]] == 0:  # move to empty cell
                             nextConfig[neighbour[0], neighbour[1]] = 2  # will be a infected snail
-                            #print(f'[{neighbour[0]} {neighbour[1]}]: Will be infected snail')
-                            #print(f'[{x} {y}]: Will be empty')
+                            # print(f'[{neighbour[0]} {neighbour[1]}]: Will be infected snail')
+                            # print(f'[{x} {y}]: Will be empty')
                             state = 0
                             break
                     else:
                         state = 2  # does not move
-                        #print(f'[{x} {y}]: Will remain infected snail')
+                        # print(f'[{x} {y}]: Will remain infected snail')
 
             if state != 0:
                 nextConfig[x, y] = state
@@ -201,60 +201,60 @@ def update():
                 variableString = "infected snail"
             else:
                 variableString = "poop"
-            ##print(f'[{x} {y}]: will be a {variableString} cell')
-            #print(f'§---------§')
+            # print(f'[{x} {y}]: will be a {variableString} cell')
+            # print(f'§---------§')
 
-    #print("Update board")
+    # print("Update board")
     config[:] = nextConfig
     nextConfig[:] = zeros([width, height])
 
     # Change state of stored values
-    ## Empty - State 0
+    #  Empty - State 0
     number_empty_cells = np.count_nonzero(config == 0)
     empty = np.append(empty, number_empty_cells)
 
-    ## Healthy - State 1
+    #  Healthy - State 1
     number_healthy_cells = np.count_nonzero(config == 1)
     healthy = np.append(healthy, number_healthy_cells)
 
-    ## Infected - State 2
+    #  Infected - State 2
     number_infected_cells = np.count_nonzero(config == 2)
     infected = np.append(infected, number_infected_cells)
 
-    ## Poop - State 3
+    #  Poop - State 3
     number_poop_cells = np.count_nonzero(config == 3)
     poop = np.append(poop, number_poop_cells)
 
     if number_infected_cells == 0:
         simulator.runEvent()
         simulator.drawModel()
-        #print("No more infected, victory!")
+        # print("No more infected, victory!")
         input("Press enter to reset the simulation")
         #simulator.resetModel()
 
-    #print(f'===== Iteration: {time} =====')
-    #print(f'Number of Empty: {number_empty_cells}')
-    #print(f'Number of Healthy: {number_healthy_cells}')
-    #print(f'Number of Infected: {number_infected_cells}')
-    #print(f'Number of Poops: {number_poop_cells}\n')
+    # print(f'===== Iteration: {time} =====')
+    # print(f'Number of Empty: {number_empty_cells}')
+    # print(f'Number of Healthy: {number_healthy_cells}')
+    # print(f'Number of Infected: {number_infected_cells}')
+    # print(f'Number of Poops: {number_poop_cells}\n')
 
 def neighbourhood(type):
     def neighbourhood(x, y):
 
         neigh_list = list()
-        # #print(f'Point: {x} {y}')
+        # # print(f'Point: {x} {y}')
         if (type == "Moore"):
             for dx in range(-1, 2):
                 for dy in range(-1, 2):
                     neigh_list.append([min(max(0, x+dx), width -1), min(max(0, y+dy), height -1)])
-                    # #print(f'Neighbour: {min(max(0, x+dx), width -1)} {min(max(0, y+dy), height -1)}')
+                    # # print(f'Neighbour: {min(max(0, x+dx), width -1)} {min(max(0, y+dy), height -1)}')
         elif (type == "Von Neumann"):
             neigh_list.append([(x + 1) % width, (y) % height])
             neigh_list.append([(x - 1) % width, (y) % height])
             neigh_list.append([(x) % width, (y + 1) % height])
             neigh_list.append([(x) % width, (y - 1) % height])
 
-        #print()
+        # print()
         return neigh_list
 
     return neighbourhood
@@ -264,12 +264,12 @@ def neighbourhood1(type):
     def neighbourhood(x, y):
 
         neigh_list = list()
-        # #print(f'Point: {x} {y}')
+        # # print(f'Point: {x} {y}')
         if (type == "Moore"):
             for dx in range(-1, 2):
                 for dy in range(-1, 2):
                     neigh_list.append([(x + dx) % width, (y + dy) % height])
-                    # #print(f'Neighbour: {(x + dx) % width} {(y + dy) % height}')
+                    # # print(f'Neighbour: {(x + dx) % width} {(y + dy) % height}')
         elif (type == "Von Neumann"):
             neigh_list.append([(x + 1) % width, (y) % height])
             neigh_list.append([(x - 1) % width, (y) % height])
