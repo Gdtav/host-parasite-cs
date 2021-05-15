@@ -3,15 +3,15 @@ from pylab import *
 
 # This parasites when leave the body die and infects another
 
-width = 3  # Size of horizontal length
-height = 3  # Size of vertical lengths
-hostProb = 0.30  # Probability of the cell being occupied by a healthy host
-infectedProb = 0.05  # Probability of cell being occupied by a host with parasite
+width = 6 # Size of horizontal length
+height = 6  # Size of vertical lengths
+hostProb = 0.3  # Probability of the cell being occupied by a healthy host
+infectedProb = 0.15  # Probability of cell being occupied by a host with parasite
 
 infectionRate = 1  # Probability of getting infected with an parasite
-regrowthRate = 0.015  # Probability of regrowing in cellular
-deathProb = 0.20  # Probability of dying after contracting the parasite
-cureProb = 0  # Probability of the parasite die
+regrowthRate = 0.01  # Probability of regrowing in cellular
+deathProb = 0.10  # Probability of dying after contracting the parasite
+cureProb = 0.0  # Probability of the parasite die
 
 neighbourhood_selected = "Moore"
 plotCA = 1
@@ -101,25 +101,32 @@ def update():
                         state = 1  # does not move
 
             elif state == 2:
+                print(f'Checking [{x} {y}]: that is infected')
                 p = random()
                 if p < deathProb:
-                    state = 0  # Death to both
+                    state = 0
+                    print(f'[{x} {y}]: Active injection')
                     # active injection
                     for neighbour in neigh_list:
                         if config[neighbour[0], neighbour[1]] == 1 and nextConfig[neighbour[0], neighbour[1]] == 1:
-                            if random() < infectedProb:
+                            print(f'\t[{neighbour[0]} {neighbour[1]}]: can be infected')
+                            if random() < infectionRate:
                                 nextConfig[neighbour[0], neighbour[1]] = 2
                                 print(f'\t[{neighbour[0]} {neighbour[1]}]: Will be infected')
 
                 elif deathProb < p < (min(deathProb + cureProb, 1)):
                     state = 1  # parasite dies
+                    print(f'[{x} {y}]: Cure')
                 else:
                     for neighbour in neigh_list:
                         if config[neighbour[0], neighbour[1]] == 0 and nextConfig[neighbour[0], neighbour[1]] == 0:
                             nextConfig[neighbour[0], neighbour[1]] = 2  # healthy moves to a empty cell
                             state = 0  # will move so this cell will be empty
+                            print(f'[{x} {y}]: will be empty as healthy host moved')
+                            print(f'\t[{neighbour[0]} {neighbour[1]}]: Will be infected host that just moved')
                             break
                     else:
+                        print(f'[{x} {y}]: Will remain a infected host that did not moved')
                         state = 2  # infected does not move
 
             elif state != nextConfig[x, y]:  # empty
@@ -129,7 +136,7 @@ def update():
             print(nextConfig)
 
     config[:] = nextConfig
-    nextConfig[:] = zeros([width, height])
+    nextConfig[:] = config
 
     # Change state of stored values
     ## Empty - State 0
@@ -144,7 +151,7 @@ def update():
     number_infected_cells = np.count_nonzero(config == 2)
     infected = np.append(infected, number_infected_cells)
 
-    if number_infected_cells == 0:
+    if number_infected_cells == -1:
         simulator.runEvent()
         print("No more infected, victory!")
         input("Press enter to reset the simulation")

@@ -3,19 +3,21 @@ from pylab import *
 
 # This parasites when leave the body die and infects another
 
-width = 100 # Size of horizontal length
+width = 100  # Size of horizontal length
 height = 100  # Size of vertical length
 hostProb = 0.30  # Probability of the cell being occupied by a healthy host
-infectedProb = 0.07  # Probability of cell being occupied by a host with parasite
+infectedProb = 0.05  # Probability of cell being occupied by a host with parasite
 
-infectionRate = 0.05  # Probability of getting infected with an parasite
-regrowthRate = 0.03  # Probability of regrowing in cellular
+infectionRate = 0.01  # Probability of getting infected with an parasite
+regrowthRate = 0.02  # Probability of regrowing in cellular
 deathProb = 0.01  # Probability of dying after contracting the parasite
 cureProb = 0.01  # Probability of the parasite die
 
 neighbourhood_selected = "Moore"
 plotCA = 1
 plotPhase = 1
+
+simulator = pycxsimulator.GUI()
 
 def initialize():
     global time, config, nextConfig, empty, healthy, infected
@@ -138,6 +140,12 @@ def update():
     number_infected_cells = np.count_nonzero(config == 2)
     infected = np.append(infected, number_infected_cells)
 
+    if number_infected_cells == 0:
+        simulator.runEvent()
+        print("No more infected, victory!")
+        input("Press enter to reset the simulation")
+        simulator.resetModel()
+
     print(f'===== Iteration: {time} =====')
     print(f'Number of Empty: {number_empty_cells}')
     print(f'Number of Healthy: {number_healthy_cells}')
@@ -184,5 +192,7 @@ def neighbourhood1(type):
         return neigh_list
 
     return neighbourhood
+
+
 if __name__ == '__main__':
-    pycxsimulator.GUI().start(func=[initialize, observe, update])
+    simulator.start(func=[initialize, observe, update])
